@@ -2,7 +2,9 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk-core');
-
+const Parser = require('rss-parser');
+let parser = new Parser();
+const Feed = require('rss-to-json');
 const STREAMS = [
   {
     "token": "stream-12",
@@ -34,10 +36,43 @@ const STREAMS = [
   }
 ];
 
+function loadFeed() {
+  return new Promise((resolve, reject) => {
+    Feed.load('https://feeds.megaphone.fm/DHT7550289169', function(err, rss){
+    if(err)
+      reject(err);
+    resolve(rss);
+  });
+    
+  });
+}
+
+// const LaunchRequestHandler = {
+//   canHandle(handlerInput) {
+//     return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+//   },
+//   async handle(handlerInput) {
+//     console.log('In LaunchRequestHandler')
+//    RssFeed = await loadFeed();
+//    title = RssFeed.items[0].title 
+//    url = RssFeed.items[0].enclosures[0].url
+
+//    console.log('Title '+title)
+//    console.log('URL '+url)
+    
+//     return handlerInput.responseBuilder
+//       .speak(title)
+//       .reprompt(title)
+//       .addAudioPlayerPlayDirective('REPLACE_ALL', url, "Test", 0, null, null)
+//       .getResponse();
+//   },
+// };
+
+
 const PlayStreamIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'LaunchRequest' ||
-      handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+    return (handlerInput.requestEnvelope.request.type === 'LaunchRequest' || 
+    handlerInput.requestEnvelope.request.type === 'IntentRequest') &&
         (
           handlerInput.requestEnvelope.request.intent.name === 'PlayStreamIntent' ||
           handlerInput.requestEnvelope.request.intent.name === 'AMAZON.ResumeIntent' ||
@@ -49,15 +84,19 @@ const PlayStreamIntentHandler = {
           handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StartOverIntent'
       );
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
+    console.log('In PlayStreamIntentHandler')
+    RssFeed = await loadFeed();
+   title = RssFeed.items[0].title 
+   url = RssFeed.items[0].enclosures[0].url
 
-    let stream = STREAMS[0];
-
-    handlerInput.responseBuilder
-      .speak(`starting ${stream.metadata.title}`)
-      .addAudioPlayerPlayDirective('REPLACE_ALL', stream.url, stream.token, 0, null, stream.metadata);
-
+   console.log('Title '+title)
+   console.log('URL '+url)
+    
     return handlerInput.responseBuilder
+      .speak(title)
+      .reprompt(title)
+      .addAudioPlayerPlayDirective('REPLACE_ALL', url, "Test", 0, null, null)
       .getResponse();
   },
 };
@@ -180,10 +219,117 @@ const ErrorHandler = {
   },
 };
 
+/* HELPER FUNCTIONS */
+
+// async function getPlaybackInfo(handlerInput) {
+//   const attributes = await handlerInput.attributesManager.getPersistentAttributes();
+//   return attributes.playbackInfo;
+// }
+
+// async function canThrowCard(handlerInput) {
+//   const {
+//     requestEnvelope,
+//     attributesManager
+//   } = handlerInput;
+//   const playbackInfo = await getPlaybackInfo(handlerInput);
+
+//   if (requestEnvelope.request.type === 'IntentRequest' && playbackInfo.playbackIndexChanged) {
+//     playbackInfo.playbackIndexChanged = false;
+//     return true;
+//   }
+//   return false;
+// }
+
+// const controller = {
+//   async play(handlerInput) {
+//     const {
+//       attributesManager,
+//       responseBuilder
+//     } = handlerInput;
+
+//     const playbackInfo = await getPlaybackInfo(handlerInput);
+//     const {
+//       playOrder,
+//       offsetInMilliseconds,
+//       index
+//     } = playbackInfo;
+//     console.log('RSS: '+rss)
+//     const playBehavior = 'REPLACE_ALL';
+//     const podcast = rss[playOrder[index]];
+//     const token = playOrder[index];
+//     playbackInfo.nextStreamEnqueued = false;
+
+//     responseBuilder
+//       .speak(`This is ${podcast.title}`)
+//       .withShouldEndSession(true)
+//       .addAudioPlayerPlayDirective(playBehavior, podcast.url, token, offsetInMilliseconds, null);
+
+//     if (await canThrowCard(handlerInput)) {
+//       const cardTitle = `Playing ${podcast.title}`;
+//       const cardContent = `Playing ${podcast.title}`;
+//       responseBuilder.withSimpleCard(cardTitle, cardContent);
+//     }
+
+//     return responseBuilder.getResponse();
+//   },
+//   stop(handlerInput) {
+//     return handlerInput.responseBuilder
+//       .addAudioPlayerStopDirective()
+//       .getResponse();
+//   },
+//   async playNext(handlerInput) {
+//     const {
+//       playbackInfo,
+//       playbackSetting,
+//     } = await handlerInput.attributesManager.getPersistentAttributes();
+
+//     const nextIndex = (playbackInfo.index + 1) % constants.audioData.length;
+
+//     if (nextIndex === 0 && !playbackSetting.loop) {
+//       return handlerInput.responseBuilder
+//         .speak('You have reached the end of the playlist')
+//         .addAudioPlayerStopDirective()
+//         .getResponse();
+//     }
+
+//     playbackInfo.index = nextIndex;
+//     playbackInfo.offsetInMilliseconds = 0;
+//     playbackInfo.playbackIndexChanged = true;
+
+//     return this.play(handlerInput);
+//   },
+//   async playPrevious(handlerInput) {
+//     const {
+//       playbackInfo,
+//       playbackSetting,
+//     } = await handlerInput.attributesManager.getPersistentAttributes();
+
+//     let previousIndex = playbackInfo.index - 1;
+
+//     if (previousIndex === -1) {
+//       if (playbackSetting.loop) {
+//         previousIndex += constants.audioData.length;
+//       } else {
+//         return handlerInput.responseBuilder
+//           .speak('You have reached the start of the playlist')
+//           .addAudioPlayerStopDirective()
+//           .getResponse();
+//       }
+//     }
+
+//     playbackInfo.index = previousIndex;
+//     playbackInfo.offsetInMilliseconds = 0;
+//     playbackInfo.playbackIndexChanged = true;
+
+//     return this.play(handlerInput);
+//   },
+// };
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
+//    StartPlaybackHandler,
     PlayStreamIntentHandler,
     PlaybackStartedIntentHandler,
     CancelAndStopIntentHandler,
@@ -193,5 +339,9 @@ exports.handler = skillBuilder
     ExceptionEncounteredRequestHandler,
     SessionEndedRequestHandler
   )
-  .addErrorHandlers(ErrorHandler)
+//  .addRequestInterceptors(LoadPersistentAttributesRequestInterceptor)
+//  .addResponseInterceptors(SavePersistentAttributesResponseInterceptor)
+//  .withTableName(dynamoDBTableName)
+//  .withAutoCreateTable(true)
+//  .withDynamoDbClient()
   .lambda();

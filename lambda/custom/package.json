@@ -8,13 +8,11 @@
     "skill",
     "audio streaming"
   ],
-  "author": "skilltemplates.com",
+  "author": "",
   "license": "See license in ../LICENSE.txt",
   "dependencies": {
-    "ask-sdk": "^2.1.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/skilltemplates/audio-stream-starter-alexa.git"
+    "ask-sdk": "^2.1.0",
+    "ask-sdk-dynamodb-persistence-adapter": "^2.0.5",
+    "rss-to-json": "^1.0.4"
   }
 }

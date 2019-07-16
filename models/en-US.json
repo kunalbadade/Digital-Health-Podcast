@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "digital health podcast",
+      "invocationName": "dhp",
       "types": [],
       "intents": [
         {
