@@ -1,0 +1,27 @@
+{
+  "clientId": "ABubL6V8epsYvM6CSbF5u1eAjsPajFF8pwsJaLvWxcCZ8hkwTY",
+  "clientSecret": "FvclGLIyxT9F7mY9zGndF5nX98jd285lG96G7YkK",
+  "redirectUri": "https://us-central1-thematic-runner-245505.cloudfunctions.net/createEstimate/callback",
+  "configurationEndpoint": "https://developer.api.intuit.com/.well-known/openid_sandbox_configuration/",
+  "api_uri": "https://sandbox-quickbooks.api.intuit.com/v3/company/",
+  "scopes": {
+    "sign_in_with_intuit": [
+      "openid",
+      "profile",
+      "email",
+      "phone",
+      "address"
+    ],
+    "connect_to_quickbooks": [
+      "com.intuit.quickbooks.accounting"
+    ],
+    "connect_handler": [
+      "com.intuit.quickbooks.accounting",
+      "openid",
+      "profile",
+      "email",
+      "phone",
+      "address"
+    ]
+  }
+}

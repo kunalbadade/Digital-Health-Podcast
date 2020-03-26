@@ -1,0 +1,61 @@
+<html>
+<head>
+  <title>Modpool Application</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script>
+    if(window.opener) {
+      window.opener.location.href = '/connected'
+      window.close()
+    }
+    function apiCallCreate(docid, i) {
+      $("#result").html('Loading... ' + i);
+      $.get("/api_call/create?doc=" + docid, function(data) {
+        $("#result").html(JSON.stringify(data, null, 2))
+        var url = 'https://app.sandbox.qbo.intuit.com/app/estimate?txnId=';
+        var id = data.Estimate.Id;
+        $('#link' + i).attr('href',url + id);
+        $('#link' + i).css('visibility', 'visible');
+      })
+    }
+    function apiCallFirestore(docid) {
+      $("#result").html('Loading...')
+      $.get("/api_call/firedata", function(array_of_alldata) {
+        console.log(JSON.stringify(array_of_alldata));
+        //add rows to table
+        for(var i=0;i<array_of_alldata[0].length;i++){
+          $("#myTable tbody").append(
+          "<tr>" + 
+            "<td>" + array_of_alldata[1][i] + "</td>" +
+            "<td>" + array_of_alldata[2][i] + "</td>" +
+            "<td>" + array_of_alldata[0][i] + "</td>" + 
+            "<td><button id=\"a5\" onclick=apiCallCreate('" + array_of_alldata[0][i] + "'," + i + ")>Create Estimate</button>" + 
+            "<td><a target=\"_blank\" style=\"visibility:hidden;\" id=\"link" + i + "\"" + ">Link</a>"  +
+          "</tr>"
+          )
+        }
+      })
+    }
+  </script>
+</head>
+<body>
+  <a href="/">Home</a>
+  <h3>Connected!</h3>
+  <p>Welcome<% if (locals.givenName) { %>, <%= locals.givenName %><% } %>!</p>
+  <p>Step 1: Get estimates</p>
+  <div>
+    <button onclick="apiCallFirestore()">Get Firestore data</button>
+    <br><br>
+    <p>Step 2: Create Quickbooks estimate</p>
+    <table id="myTable">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Document ID</th>
+        <th>Estimate</th>
+      </tr>
+      
+    </table>
+    <div><code id="result"></code></div>
+</body>
+</html>
