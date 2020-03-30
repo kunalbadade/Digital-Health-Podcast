@@ -51,7 +51,7 @@ router.get('/firedata', function (req, res) {
   var emails = [];
   var array_of_alldata = [];
 
-
+  console.log("In firedata..........")
   admin.firestore().collection('estimates').get()
     .then(function (querysnapshot) {
       querysnapshot.forEach(function (doc) {

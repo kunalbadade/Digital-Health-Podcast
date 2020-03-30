@@ -10,7 +10,7 @@
     }
     function apiCallCreate(docid, i) {
       $("#result").html('Loading... ' + i);
-      $.get("/api_call/create?doc=" + docid, function(data) {
+      $.get("api_call/create?doc=" + docid, function(data) {
         $("#result").html(JSON.stringify(data, null, 2))
         var url = 'https://app.sandbox.qbo.intuit.com/app/estimate?txnId=';
         var id = data.Estimate.Id;
@@ -20,7 +20,7 @@
     }
     function apiCallFirestore(docid) {
       $("#result").html('Loading...')
-      $.get("/api_call/firedata", function(array_of_alldata) {
+      $.get("api_call/firedata", function(array_of_alldata) {
         console.log(JSON.stringify(array_of_alldata));
         //add rows to table
         for(var i=0;i<array_of_alldata[0].length;i++){
