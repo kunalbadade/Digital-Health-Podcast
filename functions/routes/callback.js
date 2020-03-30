@@ -7,12 +7,14 @@ var router = express.Router()
 router.get('/', function (req, res) {
   // Verify anti-forgery
   
+  var functionUrl = "/createEstimate"+req.originalUrl
   // Exchange auth code for access token
-  tools.intuitAuth.code.getToken(req.originalUrl).then(function (token) {
+  tools.intuitAuth.code.getToken(functionUrl).then(function (token) {
     // Store token - this would be where tokens would need to be
     // persisted (in a SQL DB, for example).
     tools.saveToken(req.session, token)
     req.session.realmId = req.query.realmId
+    console.log("RealmID "+req.session.realmId)
     var errorFn = function(e) {
       console.log('Invalid JWT token!')
       console.log(e)

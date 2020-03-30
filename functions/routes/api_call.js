@@ -7,8 +7,7 @@ var admin = require('firebase-admin')
 var serviceAccount = require('./serviceaccount.json');
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://thematic-runner-245505.firebaseio.com"
+  credential: admin.credential.cert(serviceAccount)
 });
 /** /api_call **/
 router.get('/', function (req, res) {

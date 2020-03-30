@@ -30,7 +30,7 @@ app.use('/connected', require('./routes/connected.js'))
 
 //Test Home
 app.get('/home',(request, response) => {
-    response.status(200).send('Hello! This is working!!')
+    response.status(200).send("Hiii!!! This is working.")
 })
 
 exports.createEstimate = functions.https.onRequest(app)

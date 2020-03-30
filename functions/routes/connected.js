@@ -7,7 +7,6 @@ var router = express.Router()
 router.get('/', function (req, res) {
   var token = tools.getToken(req.session)
   if(!token) return res.redirect('/')
-
   // Don't call OpenID if we didn't request OpenID scopes
   if(!tools.containsOpenId()) return res.render('connected')
 
