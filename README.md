@@ -7,21 +7,26 @@ This appplication fetches data from the Firestore and calls Quickbooks API to cr
 
 Clone the repository:
 ```
-git clone https://kunalbadade@bitbucket.org/kunalbadade/modpools_qbo.git
+git clone https://kunalbadade@bitbucket.org/kunalbadade/modpools-csuf.git
 ```
 
 Install NPM dependencies:
 ```
-cd modpools_qbo
+cd modpools-csuf
 npm install
 ```
 
 Launch your app:
 ```
-node app.js
+firebase deploy
 ```
+You only need to enter above command if you have made changes in the code. ALso, you will need to update the serviceAccount.json and config.json file.
 
-Your app should be running!  If you direct your browser to `https://localhost:3000`, you should see the welcome screen.  Please note - the app will not be fully functional until we finish configuring it.
+Currently, you can run the firebase function with following command:
+```
+https://us-central1-thematic-runner-245505.cloudfunctions.net/createEstimate/
+```
+Your app should be running! You should see the welcome screen.  Please note - the app will not be fully functional until we finish configuring it.
 
 ### Configuring your app
 
@@ -50,9 +55,7 @@ You'll have to set a Redirect URI in both `config.json` *and* the Developer Port
 ### Run your app!
 
 After setting up both Developer Portal and your `config.json`, try launching your app again!
-```
-node app.js
-```
+
 All flows should work.  The sample app supports the following flows:
 
 **Connect To QuickBooks** - this flow requests non-OpenID scopes.  You will be able to make a QuickBooks API sample call (using the OAuth2 token) on the `/connected` landing page.
