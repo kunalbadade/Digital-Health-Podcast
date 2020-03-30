@@ -28,9 +28,4 @@ app.use('/connected', require('./routes/connected.js'))
 // Call an example API over OAuth2
  app.use('/api_call', require('./routes/api_call.js'))
 
-//Test Home
-app.get('/home',(request, response) => {
-    response.status(200).send("Hiii!!! This is working.")
-})
-
 exports.createEstimate = functions.https.onRequest(app)
